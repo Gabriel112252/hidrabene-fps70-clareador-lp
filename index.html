@@ -7,10 +7,14 @@
   <meta name="robots" content="noindex, nofollow" />
   <meta name="googlebot" content="noindex, nofollow" />
 
-  <!-- Fontes -->
+  <!-- LCP: pré-carrega a 1ª imagem do hero -->
+  <link rel="preload" as="image" href="./assets/images/hero-card1.jpg" fetchpriority="high" />
+
+  <!-- Fontes (assíncrono, sem bloquear o render) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Barlow:ital,wght@0,400;0,500;0,600;1,400&family=Noto+Serif+Display:ital,wght@1,600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Barlow:ital,wght@0,400;0,500;0,600;1,400&family=Noto+Serif+Display:ital,wght@1,600&display=swap" />
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Barlow:ital,wght@0,400;0,500;0,600;1,400&family=Noto+Serif+Display:ital,wght@1,600&display=swap" /></noscript>
 
   <style>
     /* ─── TOKENS ─────────────────────────────────────── */
@@ -1050,7 +1054,7 @@
       <div class="carousel-wrap">
         <div class="carousel-track">
           <div class="carousel-slide">
-            <img src="./assets/images/hero-card1.jpg" alt="Protetor Solar Facial FPS 70 Clareador — antes e depois" loading="eager" />
+            <img src="./assets/images/hero-card1.jpg" alt="Protetor Solar Facial FPS 70 Clareador — antes e depois" width="1228" height="1400" fetchpriority="high" loading="eager" />
           </div>
           <div class="carousel-slide">
             <img src="./assets/images/hero-card3.jpg" alt="Resultado de pele uniforme com o Protetor Solar Facial FPS 70 Clareador" loading="lazy" />
@@ -1088,11 +1092,11 @@
   <section class="ugc-section" aria-label="Quem usa">
     <p class="ugc-label">Quem usa e aprova</p>
     <div class="ugc-scroll" role="list">
-      <div class="ugc-card" role="listitem"><video class="ugc-video" autoplay muted loop playsinline webkit-playsinline preload="metadata" poster="./assets/images/poster-ugc-1.jpg"><source src="./assets/video/ugc/u1.mp4" type="video/mp4" /></video></div>
-      <div class="ugc-card" role="listitem"><video class="ugc-video" autoplay muted loop playsinline webkit-playsinline preload="metadata" poster="./assets/images/poster-ugc-2.jpg"><source src="./assets/video/ugc/u2.mp4" type="video/mp4" /></video></div>
-      <div class="ugc-card" role="listitem"><video class="ugc-video" autoplay muted loop playsinline webkit-playsinline preload="metadata" poster="./assets/images/poster-ugc-3.jpg"><source src="./assets/video/ugc/u3.mp4" type="video/mp4" /></video></div>
-      <div class="ugc-card" role="listitem"><video class="ugc-video" autoplay muted loop playsinline webkit-playsinline preload="metadata" poster="./assets/images/poster-ugc-4.jpg"><source src="./assets/video/ugc/u4.mp4" type="video/mp4" /></video></div>
-      <div class="ugc-card" role="listitem"><video class="ugc-video" autoplay muted loop playsinline webkit-playsinline preload="metadata" poster="./assets/images/poster-ugc-5.jpg"><source src="./assets/video/ugc/u5.mp4" type="video/mp4" /></video></div>
+      <div class="ugc-card" role="listitem"><video class="ugc-video" muted loop playsinline webkit-playsinline preload="none" poster="./assets/images/poster-ugc-1.jpg"><source src="./assets/video/ugc/u1.mp4" type="video/mp4" /></video></div>
+      <div class="ugc-card" role="listitem"><video class="ugc-video" muted loop playsinline webkit-playsinline preload="none" poster="./assets/images/poster-ugc-2.jpg"><source src="./assets/video/ugc/u2.mp4" type="video/mp4" /></video></div>
+      <div class="ugc-card" role="listitem"><video class="ugc-video" muted loop playsinline webkit-playsinline preload="none" poster="./assets/images/poster-ugc-3.jpg"><source src="./assets/video/ugc/u3.mp4" type="video/mp4" /></video></div>
+      <div class="ugc-card" role="listitem"><video class="ugc-video" muted loop playsinline webkit-playsinline preload="none" poster="./assets/images/poster-ugc-4.jpg"><source src="./assets/video/ugc/u4.mp4" type="video/mp4" /></video></div>
+      <div class="ugc-card" role="listitem"><video class="ugc-video" muted loop playsinline webkit-playsinline preload="none" poster="./assets/images/poster-ugc-5.jpg"><source src="./assets/video/ugc/u5.mp4" type="video/mp4" /></video></div>
     </div>
   </section>
 
@@ -1128,7 +1132,7 @@
 
     <!-- Vídeo demonstrativo — parte da seção -->
     <div class="antes-depois-video">
-      <video class="vid-inview" autoplay muted loop controls playsinline webkit-playsinline preload="metadata" poster="./assets/images/poster-antes-depois.jpg">
+      <video class="vid-inview" muted loop controls playsinline webkit-playsinline preload="none" poster="./assets/images/poster-antes-depois.jpg">
         <source src="./assets/video/antes-depois.mp4" type="video/mp4" />
       </video>
     </div>
@@ -1185,7 +1189,7 @@
   </section>
 
   <!-- Infográfico de benefícios -->
-  <img class="beneficios-img" src="./assets/images/beneficios-foto.jpg" alt="Modelo aplicando o Protetor Solar Facial FPS 70 Clareador" loading="lazy" />
+  <img class="beneficios-img" src="./assets/images/beneficios-foto.jpg" alt="Modelo aplicando o Protetor Solar Facial FPS 70 Clareador" width="1070" height="1008" loading="lazy" />
 
   <!-- ░░ ATIVOS ░░ -->
   <section class="ativos-section section-pad" aria-label="Principais ativos">
@@ -1319,7 +1323,7 @@
       <section aria-label="Fotos do produto">
         <div class="carousel-wrap">
           <div class="carousel-track" id="carouselTrack">
-            <div class="carousel-slide"><video class="vid-inview" autoplay muted loop playsinline webkit-playsinline preload="metadata" poster="./assets/images/oferta-card1-poster.jpg"><source src="./assets/video/oferta-card1.mp4" type="video/mp4" /></video></div>
+            <div class="carousel-slide"><video class="vid-inview" muted loop playsinline webkit-playsinline preload="none" poster="./assets/images/oferta-card1-poster.jpg"><source src="./assets/video/oferta-card1.mp4" type="video/mp4" /></video></div>
             <div class="carousel-slide"><img src="./assets/images/oferta-1.jpg" alt="Protetor Solar Facial FPS 70 Clareador — 94% perceberam redução e clareamento do melasma" loading="lazy" /></div>
           </div>
           <div class="carousel-dots" id="carouselDots" aria-hidden="true">
