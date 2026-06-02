@@ -1,0 +1,14 @@
+.DS_Store
+**/.DS_Store
+
+# Originais brutos pesados — só os assets comprimidos (assets/) vão pro repo
+melhores ads/
+videos ugc/
+
+# Arquivos brutos soltos na raiz (fotos/vídeos originais)
+/*.png
+/*.jpg
+/*.jpeg
+/*.mp4
+/*.mov
+/*.webp
