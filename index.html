@@ -1069,10 +1069,16 @@
     .kit-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
     .kit-name { font-family: var(--font-title); font-size: 20px; font-weight: 800; color: var(--dark); letter-spacing: -0.01em; }
     .kit-sub { font-family: var(--font-title); font-size: 13px; color: var(--gray); margin-bottom: 12px; }
-    .kit-price-old { display: block; font-family: var(--font-title); font-size: 13px; color: var(--gray); text-decoration: line-through; }
-    .kit-price-new { display: block; font-family: var(--font-title); font-size: 26px; font-weight: 800; color: var(--dark); margin: 1px 0; }
-    .kit-price-new em { font-family: var(--font-display); font-style: italic; font-weight: 600; color: var(--pink-fluor); }
-    .kit-price-parc { display: block; font-family: var(--font-title); font-size: 12px; color: var(--gray); margin-bottom: 14px; }
+    .kit-off { position: absolute; top: 12px; right: 12px; background: var(--pink-fluor); color: var(--white); font-family: var(--font-title); font-size: 12px; font-weight: 800; letter-spacing: 0.01em; padding: 4px 9px; border-radius: var(--radius-sm); line-height: 1; }
+    .kit-unit { margin: 2px 0 8px; }
+    .kit-unit-val { display: block; font-family: var(--font-title); font-size: 30px; font-weight: 800; color: var(--pink-fluor); letter-spacing: -0.015em; line-height: 1.05; }
+    .kit-unit-val small { font-size: 14px; font-weight: 700; color: var(--dark); letter-spacing: 0; }
+    .kit-unit-was { display: block; font-family: var(--font-title); font-size: 12px; color: var(--gray); margin-top: 2px; }
+    .kit-unit-was s { color: var(--gray); }
+    .kit-price-line { display: block; font-family: var(--font-title); font-size: 13.5px; color: var(--dark); margin-bottom: 16px; }
+    .kit-price-line s { color: var(--gray); font-weight: 500; }
+    .kit-price-line strong { font-weight: 800; }
+    .kit-price-parc { display: block; font-family: var(--font-title); font-size: 12px; color: var(--gray); margin-bottom: 14px; margin-top: 2px; }
     .kit-cta { width: 100%; margin-top: auto; }
     .kit-guarantee { display: flex; align-items: center; justify-content: center; gap: 6px; font-family: var(--font-title); font-size: 11.5px; color: var(--gray); margin-top: 6px; }
     .kit-guarantee svg { width: 13px; height: 13px; flex-shrink: 0; stroke: var(--pink-fluor); }
@@ -1373,39 +1379,45 @@
     <div class="kit-grid" role="list">
       <!-- 1 unidade -->
       <div class="kit-card" role="listitem">
+        <span class="kit-off">-30%</span>
         <div class="kit-media"><img src="./assets/images/kit-1un.jpg" alt="Protetor Solar Facial FPS 70 Clareador — 1 unidade" width="520" height="659" loading="lazy" /></div>
         <p class="kit-name">1 unidade</p>
         <p class="kit-sub">Tratamento de 1 mês</p>
-        <span class="kit-price-old">De R$ XX,XX</span>
-        <span class="kit-price-new">por <em>R$ XX,XX</em></span>
-        <span class="kit-price-parc">ou 12x de R$ XX,XX</span>
-        <button class="cta-primary kit-cta" onclick="comprarAgora('1-unidade')">Comprar 1 unidade</button>
+        <div class="kit-unit">
+          <span class="kit-unit-val">R$ 34,90</span>
+          <span class="kit-unit-was">na unidade avulsa</span>
+        </div>
+        <span class="kit-price-line">De <s>R$ 49,90</s> por <strong>R$ 34,90</strong></span>        <button class="cta-primary kit-cta" onclick="comprarAgora('1-unidade')">Comprar 1 unidade</button>
         <p class="kit-guarantee"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z"/></svg> Garantia incondicional de 7 dias</p>
       </div>
 
       <!-- 2 unidades -->
       <div class="kit-card" role="listitem">
         <span class="kit-banner alt">Mais vendido</span>
+        <span class="kit-off">-45%</span>
         <div class="kit-media"><img src="./assets/images/kit-2un.jpg" alt="Protetor Solar Facial FPS 70 Clareador — kit com 2 unidades" width="520" height="650" loading="lazy" /></div>
         <p class="kit-name">2 unidades</p>
         <p class="kit-sub">Tratamento de 2 meses</p>
-        <span class="kit-price-old">De R$ XX,XX</span>
-        <span class="kit-price-new">por <em>R$ XX,XX</em></span>
-        <span class="kit-price-parc">ou 12x de R$ XX,XX</span>
-        <button class="cta-primary kit-cta" onclick="comprarAgora('2-unidades')">Comprar 2 unidades</button>
+        <div class="kit-unit">
+          <span class="kit-unit-val">R$ 27,45<small>/un</small></span>
+          <span class="kit-unit-was">em vez de <s>R$ 34,90</s> cada</span>
+        </div>
+        <span class="kit-price-line">De <s>R$ 99,90</s> por <strong>R$ 54,90</strong> no kit</span>        <button class="cta-primary kit-cta" onclick="comprarAgora('2-unidades')">Comprar 2 unidades</button>
         <p class="kit-guarantee"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z"/></svg> Garantia incondicional de 7 dias</p>
       </div>
 
       <!-- 3 unidades (destaque) -->
       <div class="kit-card featured" role="listitem">
         <span class="kit-banner">Melhor custo-benefício</span>
+        <span class="kit-off">-50%</span>
         <div class="kit-media"><img src="./assets/images/kit-3un.jpg" alt="Protetor Solar Facial FPS 70 Clareador — kit com 3 unidades" width="520" height="650" loading="lazy" /></div>
         <p class="kit-name">3 unidades</p>
         <p class="kit-sub">Tratamento de 3 meses</p>
-        <span class="kit-price-old">De R$ XX,XX</span>
-        <span class="kit-price-new">por <em>R$ XX,XX</em></span>
-        <span class="kit-price-parc">ou 12x de R$ XX,XX</span>
-        <button class="cta-primary kit-cta" onclick="comprarAgora('3-unidades')">Comprar 3 unidades</button>
+        <div class="kit-unit">
+          <span class="kit-unit-val">R$ 24,96<small>/un</small></span>
+          <span class="kit-unit-was">em vez de <s>R$ 34,90</s> cada</span>
+        </div>
+        <span class="kit-price-line">De <s>R$ 149,90</s> por <strong>R$ 74,90</strong> no kit</span>        <button class="cta-primary kit-cta" onclick="comprarAgora('3-unidades')">Comprar 3 unidades</button>
         <p class="kit-guarantee"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z"/></svg> Garantia incondicional de 7 dias</p>
       </div>
     </div>
