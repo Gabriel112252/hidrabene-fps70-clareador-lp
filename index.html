@@ -1626,15 +1626,19 @@
       }
     }
 
-    // Checkout — colar o link do checkout em CHECKOUT_URL quando tiver
-    const CHECKOUT_URL = ''; // ex: 'https://checkout.hidrabene.com.br/fps70-clareador'
+    // Checkout — um link Yampi por kit
+    const CHECKOUT_URLS = {
+      '1-unidade':  'https://hidrabene.pay.yampi.com.br/r/FQH20J70UC',
+      '2-unidades': 'https://hidrabene.pay.yampi.com.br/r/524DBLU40W',
+      '3-unidades': 'https://hidrabene.pay.yampi.com.br/r/KIAU1RFFXS',
+    };
     function comprarAgora(kit) {
-      if (CHECKOUT_URL) {
-        const sep = CHECKOUT_URL.includes('?') ? '&' : '?';
-        window.location.href = kit ? (CHECKOUT_URL + sep + 'kit=' + encodeURIComponent(kit)) : CHECKOUT_URL;
+      const url = CHECKOUT_URLS[kit];
+      if (url) {
+        window.location.href = url;
         return;
       }
-      alert('Protetor Solar Facial FPS 70 Clareador' + (kit ? '\nKit: ' + kit : '') + '\n\nO link do checkout será configurado aqui (CHECKOUT_URL).');
+      alert('Protetor Solar Facial FPS 70 Clareador' + (kit ? '\nKit: ' + kit : '') + '\n\nLink de checkout não configurado para este kit (CHECKOUT_URLS).');
     }
   </script>
 
