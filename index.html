@@ -1111,6 +1111,71 @@
   </style>
 
   <script src="https://insight.hidrabene.com.br/uniclick.js?attribution=lastpaid&cookiedomain=hidrabene.com.br&cookieduration=90&defaultcampaignid=6aa2f755818faec5cb6874a2&regviewonce=false&rtkcidurl=true&script_id=6aa2f88e1044a350a10f243d"></script>
+<script>
+(function () {
+  /* ============ RT_CONFIG (unico lugar com variaveis) ============ */
+  var RT_CONFIG = {
+    TRACK_HOST: 'insight.hidrabene.com.br', // host do /click (sem https, sem barra)
+    CLICKID_RE: '[a-f0-9]{24}'              // formato do clickid RT
+  };
+  /* ================================================================ */
+
+  function getClickId() {
+    try {
+      var re = new RegExp('[?&]rtkcid=(' + RT_CONFIG.CLICKID_RE + ')', 'i');
+      var m = window.location.search.match(re);
+      if (m) return m[1];
+      var c = document.cookie.match(new RegExp('(?:^|;\\s*)rtkclickid-store=(' + RT_CONFIG.CLICKID_RE + ')', 'i'));
+      if (c) return c[1];
+      var s = null;
+      try { s = sessionStorage.getItem('rtkclickid'); } catch (e) {}
+      if (s && new RegExp('^' + RT_CONFIG.CLICKID_RE + '$', 'i').test(s)) return s;
+    } catch (e) {}
+    return null;
+  }
+
+  function patch() {
+    var cid = getClickId();
+    if (!cid) return 0;
+    var n = 0;
+    var sels = 'a[href*="' + RT_CONFIG.TRACK_HOST + '/click"], a[href*="/click/"], a[href$="/click"]';
+    document.querySelectorAll(sels).forEach(function (a) {
+      try {
+        if (a.href.indexOf('clickid=') !== -1) return;
+        var u = new URL(a.href, window.location.origin);
+        u.searchParams.set('clickid', cid);
+        a.href = u.toString();
+        n++;
+      } catch (e) {}
+    });
+    return n;
+  }
+
+  // O cookie nasce async (XHR do uniclick.js) — tenta por ~8s.
+  var tries = 0;
+  var iv = setInterval(function () {
+    tries++;
+    var n = patch();
+    if (n > 0 || tries >= 16) {
+      clearInterval(iv);
+      try { console.info('[RT] clickid patch: ' + n + ' CTA(s)'); } catch (e) {}
+    }
+  }, 500);
+
+  // Ultima chance: reescreve no momento do clique (captura).
+  document.addEventListener('click', function (e) {
+    var a = e.target && e.target.closest ? e.target.closest('a[href*="/click"]') : null;
+    if (!a || a.href.indexOf('clickid=') !== -1) return;
+    var cid = getClickId();
+    if (!cid) return;
+    try {
+      var u = new URL(a.href, window.location.origin);
+      u.searchParams.set('clickid', cid);
+      a.href = u.toString();
+    } catch (err) {}
+  }, true);
+})();
+</script>
 </head>
 <body>
 
