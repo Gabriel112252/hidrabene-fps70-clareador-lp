@@ -14,86 +14,21 @@ jobs:
         run: |
           python3 - <<'PY'
           from pathlib import Path
-          import re
-
+          import base64
           p = Path('index.html')
           s = p.read_text()
-          if 'var RT_CONFIG = {' in s:
-              raise SystemExit('Patch RT ja existe')
-
-          patch = r'''<script>
-(function () {
-  /* ============ RT_CONFIG (unico lugar com variaveis) ============ */
-  var RT_CONFIG = {
-    TRACK_HOST: 'insight.hidrabene.com.br', // host do /click (sem https, sem barra)
-    CLICKID_RE: '[a-f0-9]{24}'              // formato do clickid RT
-  };
-  /* ================================================================ */
-
-  function getClickId() {
-    try {
-      var re = new RegExp('[?&]rtkcid=(' + RT_CONFIG.CLICKID_RE + ')', 'i');
-      var m = window.location.search.match(re);
-      if (m) return m[1];
-      var c = document.cookie.match(new RegExp('(?:^|;\\s*)rtkclickid-store=(' + RT_CONFIG.CLICKID_RE + ')', 'i'));
-      if (c) return c[1];
-      var s = null;
-      try { s = sessionStorage.getItem('rtkclickid'); } catch (e) {}
-      if (s && new RegExp('^' + RT_CONFIG.CLICKID_RE + '$', 'i').test(s)) return s;
-    } catch (e) {}
-    return null;
-  }
-
-  function patch() {
-    var cid = getClickId();
-    if (!cid) return 0;
-    var n = 0;
-    var sels = 'a[href*="' + RT_CONFIG.TRACK_HOST + '/click"], a[href*="/click/"], a[href$="/click"]';
-    document.querySelectorAll(sels).forEach(function (a) {
-      try {
-        if (a.href.indexOf('clickid=') !== -1) return;
-        var u = new URL(a.href, window.location.origin);
-        u.searchParams.set('clickid', cid);
-        a.href = u.toString();
-        n++;
-      } catch (e) {}
-    });
-    return n;
-  }
-
-  // O cookie nasce async (XHR do uniclick.js) — tenta por ~8s.
-  var tries = 0;
-  var iv = setInterval(function () {
-    tries++;
-    var n = patch();
-    if (n > 0 || tries >= 16) {
-      clearInterval(iv);
-      try { console.info('[RT] clickid patch: ' + n + ' CTA(s)'); } catch (e) {}
-    }
-  }, 500);
-
-  // Ultima chance: reescreve no momento do clique (captura).
-  document.addEventListener('click', function (e) {
-    var a = e.target && e.target.closest ? e.target.closest('a[href*="/click"]') : null;
-    if (!a || a.href.indexOf('clickid=') !== -1) return;
-    var cid = getClickId();
-    if (!cid) return;
-    try {
-      var u = new URL(a.href, window.location.origin);
-      u.searchParams.set('clickid', cid);
-      a.href = u.toString();
-    } catch (err) {}
-  }, true);
-})();
-</script>'''
-
-          pat = re.compile(r'(<script\b[^>]*\bsrc=["\']https://insight\.hidrabene\.com\.br/uniclick\.js\?[^"\']+["\'][^>]*>\s*</script>)', re.I)
-          s2, n = pat.subn(lambda m: m.group(1) + '\n' + patch, s, count=1)
-          if n != 1:
-              raise SystemExit('Nao achei a tag uniclick.js')
-          p.write_text(s2)
+          if 'var RT_CONFIG = {' not in s:
+              i = s.find('https://insight.hidrabene.com.br/uniclick.js?')
+              if i < 0:
+                  raise SystemExit('Nao achei uniclick.js')
+              j = s.find('</script>', i)
+              if j < 0:
+                  raise SystemExit('Nao achei fechamento da tag Uniclick')
+              j += len('</script>')
+              patch = base64.b64decode('PHNjcmlwdD4KKGZ1bmN0aW9uICgpIHsKICAvKiA9PT09PT09PT09PT0gUlRfQ09ORklHICh1bmljbyBsdWdhciBjb20gdmFyaWF2ZWlzKSA9PT09PT09PT09PT0gKi8KICB2YXIgUlRfQ09ORklHID0gewogICAgVFJBQ0tfSE9TVDogJ2luc2lnaHQuaGlkcmFiZW5lLmNvbS5icicsIC8vIGhvc3QgZG8gL2NsaWNrIChzZW0gaHR0cHMsIHNlbSBiYXJyYSkKICAgIENMSUNLSURfUkU6ICdbYS1mMC05XXsyNH0nICAgICAgICAgICAgICAvLyBmb3JtYXRvIGRvIGNsaWNraWQgUlQKICB9OwogIC8qID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0gKi8KCiAgZnVuY3Rpb24gZ2V0Q2xpY2tJZCgpIHsKICAgIHRyeSB7CiAgICAgIHZhciByZSA9IG5ldyBSZWdFeHAoJ1s/Jl1ydGtjaWQ9KCcgKyBSVF9DT05GSUcuQ0xJQ0tJRF9SRSArICcpJywgJ2knKTsKICAgICAgdmFyIG0gPSB3aW5kb3cubG9jYXRpb24uc2VhcmNoLm1hdGNoKHJlKTsKICAgICAgaWYgKG0pIHJldHVybiBtWzFdOwogICAgICB2YXIgYyA9IGRvY3VtZW50LmNvb2tpZS5tYXRjaChuZXcgUmVnRXhwKCcoPzpefDtcXHMqKXJ0a2NsaWNraWQtc3RvcmU9KCcgKyBSVF9DT05GSUcuQ0xJQ0tJRF9SRSArICcpJywgJ2knKSk7CiAgICAgIGlmIChjKSByZXR1cm4gY1sxXTsKICAgICAgdmFyIHMgPSBudWxsOwogICAgICB0cnkgeyBzID0gc2Vzc2lvblN0b3JhZ2UuZ2V0SXRlbSgncnRrY2xpY2tpZCcpOyB9IGNhdGNoIChlKSB7fQogICAgICBpZiAocyAmJiBuZXcgUmVnRXhwKCdeJyArIFJUX0NPTkZJRy5DTElDS0lEX1JFICsgJyQnLCAnaScpLnRlc3QocykpIHJldHVybiBzOwogICAgfSBjYXRjaCAoZSkge30KICAgIHJldHVybiBudWxsOwogIH0KCiAgZnVuY3Rpb24gcGF0Y2goKSB7CiAgICB2YXIgY2lkID0gZ2V0Q2xpY2tJZCgpOwogICAgaWYgKCFjaWQpIHJldHVybiAwOwogICAgdmFyIG4gPSAwOwogICAgdmFyIHNlbHMgPSAnYVtocmVmKj0iJyArIFJUX0NPTkZJRy5UUkFDS19IT1NUICsgJy9jbGljayJdLCBhW2hyZWYqPSIvY2xpY2svIl0sIGFbaHJlZiQ9Ii9jbGljayJdJzsKICAgIGRvY3VtZW50LnF1ZXJ5U2VsZWN0b3JBbGwoc2VscykuZm9yRWFjaChmdW5jdGlvbiAoYSkgewogICAgICB0cnkgewogICAgICAgIGlmIChhLmhyZWYuaW5kZXhPZignY2xpY2tpZD0nKSAhPT0gLTEpIHJldHVybjsKICAgICAgICB2YXIgdSA9IG5ldyBVUkwoYS5ocmVmLCB3aW5kb3cubG9jYXRpb24ub3JpZ2luKTsKICAgICAgICB1LnNlYXJjaFBhcmFtcy5zZXQoJ2NsaWNraWQnLCBjaWQpOwogICAgICAgIGEuaHJlZiA9IHUudG9TdHJpbmcoKTsKICAgICAgICBuKys7CiAgICAgIH0gY2F0Y2ggKGUpIHt9CiAgICB9KTsKICAgIHJldHVybiBuOwogIH0KCiAgLy8gTyBjb29raWUgbmFzY2UgYXN5bmMgKFhIUiBkbyB1bmljbGljay5qcykg4oCUIHRlbnRhIHBvciB+OHMuCiAgdmFyIHRyaWVzID0gMDsKICB2YXIgaXYgPSBzZXRJbnRlcnZhbChmdW5jdGlvbiAoKSB7CiAgICB0cmllcysrOwogICAgdmFyIG4gPSBwYXRjaCgpOwogICAgaWYgKG4gPiAwIHx8IHRyaWVzID49IDE2KSB7CiAgICAgIGNsZWFySW50ZXJ2YWwoaXYpOwogICAgICB0cnkgeyBjb25zb2xlLmluZm8oJ1tSVF0gY2xpY2tpZCBwYXRjaDogJyArIG4gKyAnIENUQShzKScpOyB9IGNhdGNoIChlKSB7fQogICAgfQogIH0sIDUwMCk7CgogIC8vIFVsdGltYSBjaGFuY2U6IHJlZXNjcmV2ZSBubyBtb21lbnRvIGRvIGNsaXF1ZSAoY2FwdHVyYSkuCiAgZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcignY2xpY2snLCBmdW5jdGlvbiAoZSkgewogICAgdmFyIGEgPSBlLnRhcmdldCAmJiBlLnRhcmdldC5jbG9zZXN0ID8gZS50YXJnZXQuY2xvc2VzdCgnYVtocmVmKj0iL2NsaWNrIl0nKSA6IG51bGw7CiAgICBpZiAoIWEgfHwgYS5ocmVmLmluZGV4T2YoJ2NsaWNraWQ9JykgIT09IC0xKSByZXR1cm47CiAgICB2YXIgY2lkID0gZ2V0Q2xpY2tJZCgpOwogICAgaWYgKCFjaWQpIHJldHVybjsKICAgIHRyeSB7CiAgICAgIHZhciB1ID0gbmV3IFVSTChhLmhyZWYsIHdpbmRvdy5sb2NhdGlvbi5vcmlnaW4pOwogICAgICB1LnNlYXJjaFBhcmFtcy5zZXQoJ2NsaWNraWQnLCBjaWQpOwogICAgICBhLmhyZWYgPSB1LnRvU3RyaW5nKCk7CiAgICB9IGNhdGNoIChlcnIpIHt9CiAgfSwgdHJ1ZSk7Cn0pKCk7Cjwvc2NyaXB0Pg==').decode()
+              s = s[:j] + '\n' + patch + s[j:]
+              p.write_text(s)
           PY
-
           rm .github/workflows/add-rt-clickid-patch.yml
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
